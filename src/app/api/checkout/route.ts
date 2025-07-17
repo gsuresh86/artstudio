@@ -28,6 +28,14 @@ interface LineItem {
 }
 
 export async function POST(request: NextRequest) {
+  // Check if Stripe is configured
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json(
+      { error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.' },
+      { status: 500 }
+    )
+  }
+
   try {
     const body = await request.json()
     const { items, successUrl, cancelUrl } = body
